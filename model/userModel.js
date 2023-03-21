@@ -7,7 +7,7 @@ const userModel = mongoose.Schema({
     lastName: {
         type: String
     },
-    phone: {
+    phoneNum: {
         type: number
     },
     email: {
