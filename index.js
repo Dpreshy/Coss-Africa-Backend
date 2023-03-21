@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const errorHandler = require("./middleware/errorHandler");
 require("./utils/db");
 require("dotenv").config();
 
@@ -15,6 +16,8 @@ app.get("/", (req, res) => {
         message: "Cross Africa DataBase"
     });
 });
+
+app.use(errorHandler);
 
 app.listen(port, () => {
     console.log("LIstening to server");
