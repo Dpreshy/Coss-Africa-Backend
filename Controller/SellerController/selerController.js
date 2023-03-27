@@ -4,9 +4,18 @@ const jwt = require("jsonwebtoken");
 const AppError = require("../../middleware/AppError");
 require("dotenv").config();
 
+const transport = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true, // use SSL
+    auth: {
+        user: "uyiekpenelizabeth@gmail.com",
+        pass: "ypzwyqwjeznkeeps"
+    }
+});
 exports.RegisterUser = async (req, res) => {
     try {
-        const { firstName, lastName, email, phoneNum, password } = req.body;
+        const { firstName, lastName, email, phoneNum, password, isSeller } = req.body;
         const salt = await bcrypt.genSalt(10);
         const hashed = await bcrypt.hash(password, salt);
 
@@ -15,7 +24,33 @@ exports.RegisterUser = async (req, res) => {
             lastName,
             email,
             phoneNum,
-            password: hashed
+            password: hashed,
+            isSeller: true
+        });
+
+        const myID = user._id;
+        const OTP = 123456;
+        const file = path.join(__dirname, "../views/index.ejs");
+
+        ejs.renderFile(file, { myID, OTP }, (err, data) => {
+            if (err) {
+                console.log(err);
+            } else {
+                const mailOption = {
+                    from: "my-Dev",
+                    to: email,
+                    subject: "Account verification",
+                    html: `${myID} and ${myToken}`
+                };
+
+                transport.sendMail(mailOption, (err, info) => {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        console.log("mail sent", info.response);
+                    }
+                });
+            }
         });
 
         if (user) {
@@ -160,3 +195,5 @@ exports.deleteUser = async (req, res) => {
         });
     }
 };
+
+
