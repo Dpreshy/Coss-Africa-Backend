@@ -22,7 +22,34 @@ const userModel = mongoose.Schema({
     password: {
         type: String
     },
-    location: {
+    country: {
+        type: String
+    },
+    address: {
+        type: String
+    },
+    state: {
+        type: String
+    },
+    Localgovt: {
+        type: String
+    },
+    Apartment: {
+        type: String
+    },
+    NearestBusStop: {
+        type: String
+    },
+    uploadValidIdCard: {
+        type: String
+    },
+    IDtype: {
+        type: String
+    },
+    CACNumber: {
+        type: Number
+    },
+    avatar: {
         type: String
     },
     product: [ {

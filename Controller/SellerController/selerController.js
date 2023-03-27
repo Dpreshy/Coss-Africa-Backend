@@ -108,7 +108,7 @@ exports.getSingleUser = async (req, res) => {
 exports.updateUser = async (req, res) => {
     try {
         const userID = req.params.id;
-        const { firstName, lastName, phoneNum } = req.body;
+        const { firstName, lastName, phoneNum, CACNumber, uploadValidIdCard, IDtype } = req.body;
         const user = await userModel.findById(userID);
 
         if (!user) {
@@ -118,7 +118,11 @@ exports.updateUser = async (req, res) => {
         const update = await userModel.findByIdAndUpdate(user._id, {
             firstName,
             lastName,
-            phoneNum
+            phoneNum,
+            CACNumber,
+            uploadValidIdCard,
+            IDtype,
+            avatar: req.file.path
         }, { new: true });
         if (update) {
             res.status(200).json({
