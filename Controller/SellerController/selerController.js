@@ -3,16 +3,17 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const AppError = require("../../middleware/AppError");
 require("dotenv").config();
+const sendMail = require("../../utils/nodemailer");
 
-const transport = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true, // use SSL
-    auth: {
-        user: "uyiekpenelizabeth@gmail.com",
-        pass: "ypzwyqwjeznkeeps"
+const generateOTP = () => {
+    let digits = "0123456789";
+    let OTPCode = "";
+    for (let i = 0; i < 6; i++) {
+        OTPCode += digits[ Math.floor(Math.random() * 10) ];
+
     }
-});
+    return OTPCode;
+};
 exports.RegisterUser = async (req, res) => {
     try {
         const { firstName, lastName, email, phoneNum, password, isSeller } = req.body;
@@ -26,31 +27,6 @@ exports.RegisterUser = async (req, res) => {
             phoneNum,
             password: hashed,
             isSeller: true
-        });
-
-        const myID = user._id;
-        const OTP = 123456;
-        const file = path.join(__dirname, "../views/index.ejs");
-
-        ejs.renderFile(file, { myID, OTP }, (err, data) => {
-            if (err) {
-                console.log(err);
-            } else {
-                const mailOption = {
-                    from: "my-Dev",
-                    to: email,
-                    subject: "Account verification",
-                    html: `${myID} and ${myToken}`
-                };
-
-                transport.sendMail(mailOption, (err, info) => {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        console.log("mail sent", info.response);
-                    }
-                });
-            }
         });
 
         if (user) {
@@ -77,9 +53,18 @@ exports.signInUser = async (req, res) => {
                 if (comparePassword) {
                     const getUser = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: process.env.EXPIRED_DATE });
 
+                    const OTP = generateOTP();
+                    user.otp = OTP;
+
+                    await sendMail(user.firstName, user.email, OTP).then((info) => {
+                        console.log("mail sent", info);
+                    }).catch((err) => {
+                        console.log(err);
+                    });
+
                     res.status(200).json({
                         status: "Success",
-                        token: getUser
+                        token: "Check your email for your logIn OTP"
                     });
                 } else {
                     throw new AppError(400, "Invalid password");
@@ -90,6 +75,29 @@ exports.signInUser = async (req, res) => {
         } else {
             throw new AppError(400, "User eamil and password must be added");
         }
+    } catch (error) {
+        res.status(500).json({
+            status: "Fail",
+            message: error.message
+        });
+    }
+};
+
+exports.verifyUser = async (req, res, next) => {
+    try {
+        const userID = req.user.id;
+        const { otp } = req.body;
+
+        const getUser = await userModel.findById(userID);
+        if (otp != getUser.otp) {
+            next(new AppError(400, "Invalid OTP"));
+        }
+
+        res.status(200).json({
+            status: "Success",
+            message: `welcome back ${getUser.firstName}`
+        });
+
     } catch (error) {
         res.status(500).json({
             status: "Fail",
