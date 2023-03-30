@@ -3,11 +3,10 @@ const AppError = require("./AppError");
 const errorHandler = async (error, req, res, next) => {
 
     if (error instanceof AppError) {
-        res.status(error.statusCode).json({
+        return res.status(error.statusCode).json({
             message: error.message
         });
     }
-    console.log(error);
     res.status(error.statusCode || 500).send(error.message || "internal server error");
 };
 

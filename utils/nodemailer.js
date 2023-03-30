@@ -1,3 +1,11 @@
+const nodeMailer = require('nodemailer');
+const { google } = require('googleapis');
+const crypto = require("crypto");
+const jwt = require("jsonwebtoken");
+const path = require("path");
+const ejs = require("ejs");
+require("dotenv").config();
+
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const REFRESH_TOKEN = "1//04tJ8CVDDrJ3KCgYIARAAGAQSNwF-L9Ir0HQZX0IbQMSrgAEkNBI9NzJWqMHHpJEUAl_08rQKXljsqLqCf1CtIqpn3Gfp_qvWUMs";
@@ -12,9 +20,9 @@ const oAuthPass = new google.auth.OAuth2(
 oAuthPass.setCredentials({ refresh_token: REFRESH_TOKEN });
 
 const getToken = crypto.randomBytes(32).toString("hex");
-const token = jwt.sign({ getToken }, process.env.TOKEN_SECRET, { expiresIn: "3d" });
+const token = jwt.sign({ getToken }, process.env.JWT_SECRET, { expiresIn: "3d" });
 
-const sendMail = async (email, user, secretToken, mode) => {
+const sendMail = async (user, email, otp) => {
     try {
         const createToken = await oAuthPass.getAccessToken();
 
@@ -36,7 +44,7 @@ const sendMail = async (email, user, secretToken, mode) => {
         const buildFile = path.join(__dirname, "../views/resetPassword.ejs");
         const data = await ejs.renderFile(buildFile, {
             name: user,
-            secretToken,
+            otp: otp,
         });
 
         const mailOptions = {
