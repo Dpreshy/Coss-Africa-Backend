@@ -4,6 +4,7 @@ const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const path = require("path");
 const ejs = require("ejs");
+require("dotenv").config();
 
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
@@ -19,7 +20,7 @@ const oAuthPass = new google.auth.OAuth2(
 oAuthPass.setCredentials({ refresh_token: REFRESH_TOKEN });
 
 const getToken = crypto.randomBytes(32).toString("hex");
-const token = jwt.sign({ getToken }, process.env.TOKEN_SECRET, { expiresIn: "3d" });
+const token = jwt.sign({ getToken }, process.env.JWT_SECRET, { expiresIn: "3d" });
 
 const sendMail = async (user, email, otp) => {
     try {

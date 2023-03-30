@@ -16,7 +16,7 @@ const generateOTP = () => {
 };
 exports.RegisterUser = async (req, res) => {
     try {
-        const { firstName, lastName, email, phoneNum, password, isSeller } = req.body;
+        const { firstName, lastName, email, companyName, phoneNum, password } = req.body;
         const salt = await bcrypt.genSalt(10);
         const hashed = await bcrypt.hash(password, salt);
 
@@ -24,6 +24,7 @@ exports.RegisterUser = async (req, res) => {
             firstName,
             lastName,
             email,
+            companyName,
             phoneNum,
             password: hashed,
             isSeller: true
@@ -38,8 +39,9 @@ exports.RegisterUser = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             status: "Fail",
-            message: error.message
+            message: error
         });
+        console.log(error);
     }
 };
 
@@ -57,10 +59,11 @@ exports.signInUser = async (req, res) => {
                     user.otp = OTP;
 
                     await sendMail(user.firstName, user.email, OTP).then((info) => {
-                        console.log("mail sent", info);
+                        console.log("mail sent", info.response);
                     }).catch((err) => {
                         console.log(err);
                     });
+                    console.log(OTP);
 
                     res.status(200).json({
                         status: "Success",
@@ -85,11 +88,11 @@ exports.signInUser = async (req, res) => {
 
 exports.verifyUser = async (req, res, next) => {
     try {
-        const userID = req.user.id;
+        const userID = req.params.id;
         const { otp } = req.body;
 
         const getUser = await userModel.findById(userID);
-        if (otp != getUser.otp) {
+        if (otgetUser.otp) {
             next(new AppError(400, "Invalid OTP"));
         }
 

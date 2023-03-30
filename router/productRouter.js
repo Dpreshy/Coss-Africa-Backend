@@ -1,5 +1,5 @@
 const express = require("express");
-import { getAllProduct, createProduct } from "../Controller/productController/productController";
+const { getAllProduct, createProduct } = require("../Controller/productController/productController");
 const router = express.Router();
 
 router.route("/").get(getAllProduct);
