@@ -8,7 +8,7 @@ exports.getAllProduct = async (req, res, next) => {
         const product = await productModel.find();
 
         if (product < 1) {
-            next(new AppError(404, "no product found"));
+            throw new AppError(404, "no product found");
         }
 
         return res.status(200).json({
@@ -25,15 +25,15 @@ exports.getAllProduct = async (req, res, next) => {
 
 exports.createProduct = async (req, res, next) => {
     try {
-        const userID = req.user.id;
+        const userID = req.params.id;
         const getUser = await userModel.findById(userID);
         const { name, price, brand, category, type, quantity, condition, description } = req.body;
 
-        if (!getUser.isSeler) {
-            next(new AppError(404, "You are not allowed to perform this operation"));
+        if (getUser.isSeller != true) {
+            throw new AppError(404, "You are not allowed to perform this operation");
         }
 
-        const postProduct = await new productModel({
+        const postProduct = new productModel({
             name,
             price,
             quantity,
@@ -43,14 +43,20 @@ exports.createProduct = async (req, res, next) => {
         postProduct.user = getUser;
         postProduct.save();
 
-        getUser.product.push(mongoose.Types.ObjectId(postProduct._id));
+        getUser.product.push(new mongoose.Types.ObjectId(postProduct._id));
         getUser.save();
+
+        res.status(201).json({
+            status: "Success",
+            data: postProduct
+        });
 
     } catch (error) {
         res.status(500).json({
             status: "Fail",
             message: error.message
         });
+        console.log(error);
     }
 };
 

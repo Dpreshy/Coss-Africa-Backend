@@ -50,16 +50,16 @@ exports.signInUser = async (req, res) => {
         const { email, password } = req.body;
         if (email && password) {
             const user = await userModel.findOne({ email });
+            const OTP = generateOTP();
+            user.otp = OTP;
             if (user) {
                 const comparePassword = await bcrypt.compare(password, user.password);
                 if (comparePassword) {
                     const getUser = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: process.env.EXPIRED_DATE });
 
-                    const OTP = generateOTP();
-                    user.otp = OTP;
 
                     await sendMail(user.firstName, user.email, OTP).then((info) => {
-                        console.log("mail sent", info.response);
+                        console.log("mail sent");
                     }).catch((err) => {
                         console.log(err);
                     });
@@ -92,7 +92,7 @@ exports.verifyUser = async (req, res, next) => {
         const { otp } = req.body;
 
         const getUser = await userModel.findById(userID);
-        if (otgetUser.otp) {
+        if (getUser.otp) {
             next(new AppError(400, "Invalid OTP"));
         }
 
