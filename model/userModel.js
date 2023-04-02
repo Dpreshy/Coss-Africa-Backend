@@ -28,6 +28,9 @@ const userModel = mongoose.Schema({
     address: {
         type: String
     },
+    address2: {
+        type: String
+    },
     state: {
         type: String
     },
@@ -43,6 +46,9 @@ const userModel = mongoose.Schema({
     uploadValidIdCard: {
         type: String
     },
+    postalCode: {
+        type: String
+    },
     IDtype: {
         type: String
     },
@@ -50,6 +56,18 @@ const userModel = mongoose.Schema({
         type: Number
     },
     avatar: {
+        type: String
+    },
+    gender: {
+        type: String
+    },
+    city: {
+        type: String
+    },
+    DateOfBirth: {
+        type: String
+    },
+    shippingFrom: {
         type: String
     },
     product: [ {
