@@ -57,6 +57,7 @@ exports.signInUser = async (req, res) => {
                 if (comparePassword) {
                     const getUser = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: process.env.EXPIRED_DATE });
 
+                    const { password, ...info } = user._doc;
 
                     await sendMail(user.firstName, user.email, OTP).then((info) => {
                         console.log("mail sent");
