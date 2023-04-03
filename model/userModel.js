@@ -37,7 +37,7 @@ const userModel = mongoose.Schema({
     Localgovt: {
         type: String
     },
-    Apartment: {
+    apartment: {
         type: String
     },
     NearestBusStop: {

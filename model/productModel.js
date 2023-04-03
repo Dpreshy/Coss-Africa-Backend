@@ -31,18 +31,24 @@ const productModel = mongoose.Schema({
     gender: {
         type: String
     },
-    avatar1: {
+    model: {
         type: String
+    },
+    avatar1: {
+        type: String,
+        default: "jrrjr"
     },
     avatar2: {
-        type: String
+        type: String,
+        default: "jrrjr"
     },
     avatar3: {
-        type: String
+        type: String,
+        default: "jrrjr"
     },
     category: {
         type: String,
-        enum: [ "phone", "food", "computer", "electronics" ],
+        enum: [ "phone", "food and groceries", "clothing and fashion", "electronics" ],
         required: [ true, "Please put in a category" ]
     },
     user: {
