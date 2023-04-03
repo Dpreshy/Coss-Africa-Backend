@@ -4,6 +4,15 @@ const jwt = require("jsonwebtoken");
 const AppError = require("../../middleware/AppError");
 require("dotenv").config();
 
+const generateOTP = () => {
+    let digits = "0123456789";
+    let OTPCode = "";
+    for (let i = 0; i < 6; i++) {
+        OTPCode += digits[ Math.floor(Math.random() * 10) ];
+
+    }
+    return OTPCode;
+};
 exports.RegisterUser = async (req, res) => {
     try {
         const { firstName, lastName, email, phoneNum, password } = req.body;
@@ -31,7 +40,70 @@ exports.RegisterUser = async (req, res) => {
         });
     }
 };
+exports.signInUser = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        if (email && password) {
+            const user = await userModel.findOne({ email });
+            const OTP = generateOTP();
+            user.otp = OTP;
+            if (user) {
+                const comparePassword = await bcrypt.compare(password, user.password);
+                if (comparePassword) {
+                    const getUser = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: process.env.EXPIRED_DATE });
 
+                    const { password, ...info } = user._doc;
+
+                    await sendMail(user.firstName, user.email, OTP).then((info) => {
+                        console.log("mail sent");
+                    }).catch((err) => {
+                        console.log(err);
+                    });
+                    console.log(OTP);
+
+                    res.status(200).json({
+                        status: "Success",
+                        token: "Check your email for your logIn OTP"
+                    });
+                } else {
+                    throw new AppError(400, "Invalid password");
+                }
+            } else {
+                throw new AppError(400, "User not found");
+            }
+        } else {
+            throw new AppError(400, "User eamil and password must be added");
+        }
+    } catch (error) {
+        res.status(500).json({
+            status: "Fail",
+            message: error.message
+        });
+    }
+};
+
+exports.verifyUser = async (req, res, next) => {
+    try {
+        const userID = req.params.id;
+        const { otp } = req.body;
+
+        const getUser = await userModel.findById(userID);
+        if (getUser.otp) {
+            next(new AppError(400, "Invalid OTP"));
+        }
+
+        res.status(200).json({
+            status: "Success",
+            message: `welcome back ${getUser.firstName}`
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            status: "Fail",
+            message: error.message
+        });
+    }
+};
 exports.signInUser = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -62,7 +134,34 @@ exports.signInUser = async (req, res) => {
         });
     }
 };
+exports.createAddress = async (req, res, next) => {
+    try {
+        const { country, firstName, lastName, address, apartment, city, state, NearestBusStop, phoneNumber } = req.body;
 
+        const user = await userModel.create({
+            country,
+            firstName,
+            lastName,
+            address,
+            apartment,
+            city,
+            state,
+            NearestBusStop,
+            phoneNumber
+        });
+
+        res.status(201).json({
+            status: "Success",
+            data: user
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            status: "Fail",
+            message: error.message
+        });
+    }
+};
 exports.getAll = async (req, res) => {
     try {
         const user = await userModel.find();
