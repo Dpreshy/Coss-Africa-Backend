@@ -2,6 +2,8 @@ const productModel = require("../../model/productModel");
 const userModel = require("../../model/userModel");
 const mongoose = require("mongoose");
 const AppError = require("../../middleware/AppError");
+const cloudinary = require("../../utils/cloudinary");
+const fs = require("fs");
 
 exports.getAllProduct = async (req, res, next) => {
     try {
@@ -36,17 +38,30 @@ exports.createProduct = async (req, res, next) => {
         if (category != "phone") {
             throw new AppError(404, "this category does not exsit");
         }
+
+        const image = async (path) => await cloudinary.uploads(path, "Images");
+        const urls = [];
+        const files = req.files;
+
+        for (const file of files) {
+            const { path } = file;
+            const newPath = await image(path);
+
+            urls.push(newPath);
+            fs.unlinkSync(path);
+        }
+
         const postProduct = new productModel({
             name,
             price,
             brand,
+            ram,
             storage,
             condition,
             quantity,
+            category,
             description,
-            avatar1: req.file.path,
-            avatar2: req.file.path,
-            avatar2: req.file.path,
+            avatar: urls,
         });
 
         postProduct.user = getUser;
@@ -81,14 +96,26 @@ exports.createFood = async (req, res, next) => {
         if (category != "food and groceries") {
             throw new AppError(404, "this category does not exsit");
         }
+
+        const image = async (path) => await cloudinary.uploads(path, "Images");
+        const urls = [];
+        const files = req.files;
+
+        for (const file of files) {
+            const { path } = file;
+            const newPath = await image(path);
+
+            urls.push(newPath);
+            fs.unlinkSync(path);
+        }
+
         const postProduct = new productModel({
             name,
             price,
             brand,
             description,
-            avatar1: req.file.path,
-            avatar2: req.file.path,
-            avatar2: req.file.path,
+            category,
+            avatar: urls
         });
 
         postProduct.user = getUser;
@@ -123,6 +150,18 @@ exports.createCloth = async (req, res, next) => {
         if (category != "clothing and fashion") {
             throw new AppError(404, "this category does not exsit");
         }
+
+        const image = async (path) => await cloudinary.uploads(path, "Images");
+        const urls = [];
+        const files = req.files;
+
+        for (const file of files) {
+            const { path } = file;
+            const newPath = await image(path);
+
+            urls.push(newPath);
+            fs.unlinkSync(path);
+        }
         const postProduct = new productModel({
             name,
             price,
@@ -131,9 +170,8 @@ exports.createCloth = async (req, res, next) => {
             condition,
             type,
             description,
-            avatar1: req.file.path,
-            avatar2: req.file.path,
-            avatar2: req.file.path,
+            category,
+            avatar: urls
         });
 
         postProduct.user = getUser;
@@ -168,6 +206,19 @@ exports.createElectronics = async (req, res, next) => {
         if (category != "electronics") {
             throw new AppError(404, "this category does not exsit");
         }
+
+        const image = async (path) => await cloudinary.uploads(path, "Images");
+        const urls = [];
+        const files = req.files;
+
+        for (const file of files) {
+            const { path } = file;
+            const newPath = await image(path);
+
+            urls.push(newPath);
+            fs.unlinkSync(path);
+        }
+
         const postProduct = new productModel({
             name,
             price,
@@ -175,9 +226,8 @@ exports.createElectronics = async (req, res, next) => {
             model,
             condition,
             description,
-            avatar1: req.file.path,
-            avatar2: req.file.path,
-            avatar2: req.file.path,
+            category,
+            avatar: urls
         });
 
         postProduct.user = getUser;
