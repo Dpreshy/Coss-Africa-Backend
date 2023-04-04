@@ -167,7 +167,7 @@ exports.updateUser = async (req, res) => {
             lastName,
             phoneNum,
             CACNumber,
-            uploadValidIdCard,
+            uploadValidIdCard: req.file.path,
             IDtype,
             avatar: req.file.path
         }, { new: true });

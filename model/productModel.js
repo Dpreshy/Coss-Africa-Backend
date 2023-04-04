@@ -34,18 +34,11 @@ const productModel = mongoose.Schema({
     model: {
         type: String
     },
-    avatar1: {
-        type: String,
-        default: "jrrjr"
-    },
-    avatar2: {
-        type: String,
-        default: "jrrjr"
-    },
-    avatar3: {
-        type: String,
-        default: "jrrjr"
-    },
+    avatar: [ {
+        url: {
+            type: String,
+        }
+    } ],
     category: {
         type: String,
         enum: [ "phone", "food and groceries", "clothing and fashion", "electronics" ],
