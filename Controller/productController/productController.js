@@ -269,3 +269,14 @@ exports.getSingleProduct = async (req, res, next) => {
         });
     }
 };
+exports.searchPost = async (req, res) => {
+    const keyWord = req.query.search ? {
+        $or: [
+            { name: { $regex: req.query.search, $options: "i" } },
+            { brand: { $regex: req.query.search, $options: "i" } },
+        ]
+    } : {};
+
+    const userWord = await postModel.find(keyWord).populate("definition");
+    res.status(200).send(userWord);
+};
