@@ -51,6 +51,7 @@ exports.signInUser = async (req, res) => {
                 const comparePassword = await bcrypt.compare(password, user.password);
                 if (comparePassword) {
                     const getUser = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: process.env.EXPIRED_DATE });
+                    await userModel.findByIdAndUpdate(user._id, { otp: OTP }, { new: true });
 
                     const { password, ...info } = user._doc;
 
@@ -88,13 +89,14 @@ exports.verifyUser = async (req, res, next) => {
         const { otp } = req.body;
 
         const getUser = await userModel.findById(userID);
-        if (getUser.otp) {
-            next(new AppError(400, "Invalid OTP"));
+        if (getUser.otp != otp) {
+            throw new AppError(400, "Invalid OTP");
         }
+        await userModel.findByIdAndUpdate(userID, { otp: "" }, { new: true });
 
         res.status(200).json({
             status: "Success",
-            message: `welcome back ${getUser.firstName}`
+            message: getUser
         });
 
     } catch (error) {

@@ -280,3 +280,25 @@ exports.searchPost = async (req, res) => {
     const userWord = await postModel.find(keyWord).populate("definition");
     res.status(200).send(userWord);
 };
+
+exports.removeProduct = async (req, res) => {
+    try {
+        const productID = req.params.proID;
+        const user = await userModel.findById(req.params.userID);
+        const product = await productModel.findByIdAndDelete(productID);
+
+        user.product.pull(product);
+        user.save();
+
+        res.status(200).json({
+            status: "Success",
+            message: "Product as been deleted successfully"
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: "Fail",
+            message: error.message
+        });
+        console.log(error);
+    }
+};
