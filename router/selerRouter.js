@@ -9,7 +9,7 @@ router.route("/register").post(RegisterUser);
 router.route("/login").post(signInUser);
 router.route("/:id/verify").patch(verifyUser);
 router.route("/:id").get(getSingleUser);
-router.route("/:id/update").patch(upload.any(), updateUser);
+router.route("/:id/update").patch(upload.array("avatar"), updateUser);
 router.route("/:id/delete").delete(deleteUser);
 
 module.exports = router;

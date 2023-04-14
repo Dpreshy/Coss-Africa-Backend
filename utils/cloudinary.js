@@ -19,7 +19,7 @@ exports.uploads = (file) => {
 		cloudinary.uploader.upload(file, opts, (error, result) => {
 			if (result && result.secure_url) {
 				resolve({
-					url: result.secure_url
+					url: result.secure_url,
 				});
 			}
 		});

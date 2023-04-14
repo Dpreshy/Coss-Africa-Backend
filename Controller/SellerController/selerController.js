@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken");
 const AppError = require("../../middleware/AppError");
 require("dotenv").config();
 const sendMail = require("../../utils/nodemailer");
+const cloudinary = require("../../utils/cloudinary");
+const fs = require("fs");
 
 const generateOTP = () => {
     let digits = "0123456789";
@@ -56,6 +58,7 @@ exports.signInUser = async (req, res) => {
                 const comparePassword = await bcrypt.compare(password, user.password);
                 if (comparePassword) {
                     const getUser = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: process.env.EXPIRED_DATE });
+                    await userModel.findByIdAndUpdate(user._id, { otp: OTP }, { new: true });
 
                     const { password, ...info } = user._doc;
 
@@ -68,7 +71,8 @@ exports.signInUser = async (req, res) => {
 
                     res.status(200).json({
                         status: "Success",
-                        token: "Check your email for your logIn OTP"
+                        token: "Check your email for your logIn OTP",
+                        data: user
                     });
                 } else {
                     throw new AppError(400, "Invalid password");
@@ -93,13 +97,14 @@ exports.verifyUser = async (req, res, next) => {
         const { otp } = req.body;
 
         const getUser = await userModel.findById(userID);
-        if (getUser.otp) {
-            next(new AppError(400, "Invalid OTP"));
+        if (getUser.otp != otp) {
+            throw new AppError(400, "Invalid OTP");
         }
+        await userModel.findByIdAndUpdate(userID, { otp: "" }, { new: true });
 
         res.status(200).json({
             status: "Success",
-            message: `welcome back ${getUser.firstName}`
+            message: getUser
         });
 
     } catch (error) {
@@ -107,6 +112,7 @@ exports.verifyUser = async (req, res, next) => {
             status: "Fail",
             message: error.message
         });
+        console.log(error.message);
     }
 };
 
@@ -162,14 +168,25 @@ exports.updateUser = async (req, res) => {
             throw new AppError(404, "User does not exist");
         }
 
+        const image = async (path) => await cloudinary.uploads(path, "Images");
+        const urls = [];
+        const files = req.files;
+
+        for (const file of files) {
+            const { path } = file;
+            const newPath = await image(path);
+
+            urls.push(newPath);
+            fs.unlinkSync(path);
+        }
+
         const update = await userModel.findByIdAndUpdate(user._id, {
             firstName,
             lastName,
             phoneNum,
             CACNumber,
-            uploadValidIdCard: req.file.path,
             IDtype,
-            avatar: req.file.path
+            avatar: urls
         }, { new: true });
         if (update) {
             res.status(200).json({

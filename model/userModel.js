@@ -55,9 +55,12 @@ const userModel = mongoose.Schema({
     CACNumber: {
         type: Number
     },
-    avatar: {
-        type: String
-    },
+    avatar: [
+        {
+            name: { type: String },
+            url: { type: String }
+        }
+    ],
     gender: {
         type: String
     },
