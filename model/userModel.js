@@ -73,6 +73,9 @@ const userModel = mongoose.Schema({
     shippingFrom: {
         type: String
     },
+    completed: {
+        type: String
+    },
     product: [ {
         type: mongoose.Schema.Types.ObjectId,
         ref: "products"

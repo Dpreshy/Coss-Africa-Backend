@@ -34,6 +34,21 @@ const productModel = mongoose.Schema({
     model: {
         type: String
     },
+    status: {
+        type: String
+    },
+    active: {
+        type: String
+    },
+    startDate: {
+        type: String
+    },
+    endDate: {
+        type: String
+    },
+    tag: {
+        type: String
+    },
     avatar: [ {
         url: {
             type: String,
