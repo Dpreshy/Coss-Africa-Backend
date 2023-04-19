@@ -38,12 +38,15 @@ const productModel = mongoose.Schema({
         type: String
     },
     active: {
-        type: String
+        type: Boolean
     },
     startDate: {
         type: String
     },
     endDate: {
+        type: String
+    },
+    orderNumber: {
         type: String
     },
     tag: {

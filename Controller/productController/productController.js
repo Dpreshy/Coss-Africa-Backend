@@ -298,8 +298,8 @@ exports.searchPost = async (req, res) => {
 };
 exports.purchaseProduct = async (req, res) => {
     try {
+        const id = req.params.productID;
         const { qty } = req.body;
-        const id = req.params.id;
         const getProduct = await productModel.findById(id);
 
         if (getProduct.quantity == 0) {
@@ -310,11 +310,17 @@ exports.purchaseProduct = async (req, res) => {
             quantity: getProduct.quantity - qty,
             status: "pending"
         }, { new: true });
+
+        res.status(200).json({
+            status: "Success",
+            data: purchased
+        });
     } catch (error) {
         res.status(500).json({
             status: "Failed",
             message: error.message
         });
+        console.log(error);
     }
 };
 exports.removeProduct = async (req, res) => {

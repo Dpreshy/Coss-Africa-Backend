@@ -40,9 +40,9 @@ const sendMail = async (user, email, otp) => {
         });
 
         const mailOptions = {
-            from: process.env.GMAIL_USERNAME,
+            from: "Cross-Africa",
             to: email,
-            subject: "Reset Password",
+            subject: "Verification OTP",
             html: data,
 
         };
