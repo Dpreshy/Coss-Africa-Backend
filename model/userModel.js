@@ -22,6 +22,15 @@ const userModel = mongoose.Schema({
     password: {
         type: String
     },
+    bankName: {
+        type: String
+    },
+    accountName: {
+        type: String
+    },
+    accountNumber: {
+        type: String
+    },
     country: {
         type: String
     },
@@ -35,6 +44,9 @@ const userModel = mongoose.Schema({
         type: String
     },
     Localgovt: {
+        type: String
+    },
+    shopName: {
         type: String
     },
     apartment: {

@@ -158,10 +158,49 @@ exports.getSingleUser = async (req, res) => {
         });
     }
 };
+exports.updateUser2 = async (req, res) => {
+    try {
+        const userID = req.params.id;
+        const user = await userModel.findById(userID);
+
+        if (!user) {
+            throw new AppError(404, "User does not exist");
+        }
+
+        const update = await userModel.findByIdAndUpdate(user._id, req.body, { new: true });
+        if (update) {
+            res.status(200).json({
+                status: "Success",
+                data: update
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            status: "Fail",
+            message: error.message
+        });
+        console.log(error);
+    }
+
+};
 exports.updateUser = async (req, res) => {
     try {
         const userID = req.params.id;
-        const { firstName, lastName, phoneNum, CACNumber, uploadValidIdCard, IDtype } = req.body;
+        const {
+            firstName,
+            lastName,
+            phoneNum,
+            CACNumber,
+            companyName,
+            country,
+            IDtype,
+            address2,
+            address,
+            gender,
+            city,
+            DateOfBirth,
+            shippingFrom
+        } = req.body;
         const user = await userModel.findById(userID);
 
         if (!user) {
@@ -185,7 +224,15 @@ exports.updateUser = async (req, res) => {
             lastName,
             phoneNum,
             CACNumber,
+            companyName,
+            country,
             IDtype,
+            address2,
+            address,
+            gender,
+            city,
+            DateOfBirth,
+            shippingFrom,
             avatar: urls
         }, { new: true });
         if (update) {
@@ -199,6 +246,7 @@ exports.updateUser = async (req, res) => {
             status: "Fail",
             message: error.message
         });
+        console.log(error);
     }
 
 };
