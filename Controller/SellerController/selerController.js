@@ -63,7 +63,7 @@ exports.signInUser = async (req, res) => {
                     const { password, ...info } = user._doc;
 
                     await sendMail(user.firstName, user.email, OTP).then((info) => {
-                        console.log("mail sent");
+                        console.log("mail sent", info);
                     }).catch((err) => {
                         console.log(err);
                     });

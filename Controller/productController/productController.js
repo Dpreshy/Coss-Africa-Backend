@@ -249,22 +249,22 @@ exports.createElectronics = async (req, res, next) => {
         console.log(error);
     }
 };
-exports.productVariation=async(req,res)=>{
+exports.productVariation = async (req, res) => {
     try {
-        const id = req.params.productID
-        const product = await productModel.findByIdAndUpdate(id,req.body,{new: true})
+        const id = req.params.productID;
+        const product = await productModel.findByIdAndUpdate(id, req.body, { new: true });
 
         res.status(200).json({
             status: "Success",
             data: product
-        })
+        });
     } catch (error) {
         res.status(500).json({
             status: "Fail",
             message: error.message
-        })
+        });
     }
-}
+};
 
 exports.getSingleProduct = async (req, res, next) => {
     try {
@@ -296,27 +296,33 @@ exports.searchPost = async (req, res) => {
     const userWord = await postModel.find(keyWord).populate("definition");
     res.status(200).send(userWord);
 };
-exports.purchaseProduct =async(req,res)=>{
+exports.purchaseProduct = async (req, res) => {
     try {
-        const {qty} = req.body
-        const id =  req.params.id
-        const getProduct = await productModel.findById(id)
+        const id = req.params.productID;
+        const { qty } = req.body;
+        const getProduct = await productModel.findById(id);
 
-        if(getProduct.quantity == 0){
-            throw new AppError(404, "No product found")
+        if (getProduct.quantity == 0) {
+            throw new AppError(404, "No product found");
         }
 
         const purchased = await productModel.findByIdAndUpdate(getProduct._id, {
             quantity: getProduct.quantity - qty,
             status: "pending"
-        },{new: true})
+        }, { new: true });
+
+        res.status(200).json({
+            status: "Success",
+            data: purchased
+        });
     } catch (error) {
         res.status(500).json({
             status: "Failed",
             message: error.message
-        })
+        });
+        console.log(error);
     }
-}
+};
 exports.removeProduct = async (req, res) => {
     try {
         const productID = req.params.proID;
