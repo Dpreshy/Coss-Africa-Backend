@@ -13,5 +13,6 @@ router.route("/:userID/:proID/remove").delete(removeProduct);
 router.route("/:id").get(getSingleProduct);
 router.route("/:productID/update").patch(productVariation);
 router.route("/:productID/order").patch(purchaseProduct);
+router.route("/:productID/status").patch(updateOrderStatus);
 
 module.exports = router;
