@@ -344,3 +344,18 @@ exports.removeProduct = async (req, res) => {
         console.log(error);
     }
 };
+
+exports.updateOrderStatus = (req, res) => {
+    productModel.update(
+        { _id: req.body.orderId },
+        { $set: { status: req.body.status } },
+        (err, order) => {
+            if (err) {
+                return res.status(400).json({
+                    error: AppError(err),
+                });
+            }
+            res.json(order);
+        }
+    );
+};
