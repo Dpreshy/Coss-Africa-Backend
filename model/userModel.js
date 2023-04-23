@@ -86,20 +86,23 @@ const userModel = mongoose.Schema({
         type: String
     },
     completed: {
-        type: String
+        type: Boolean,
+        default: false
     },
     product: [ {
         type: mongoose.Schema.Types.ObjectId,
         ref: "products"
     } ],
+    isSeller: {
+        type: Boolean,
+        default: false
+    },
     isAdmin: {
         type: Boolean,
-    },
-    isSeller: {
-        type: Boolean
+        default: false
     },
     otp: {
-        type: Number
+        type: Number,
     }
 
 }, { timestamps: true });
