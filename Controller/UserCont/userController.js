@@ -2,6 +2,7 @@ const userModel = require("../../model/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const AppError = require("../../middleware/AppError");
+const sendMail = require("../../utils/nodemailer");
 require("dotenv").config();
 
 const generateOTP = () => {
@@ -40,6 +41,36 @@ exports.RegisterUser = async (req, res) => {
         });
     }
 };
+exports.RegisterAdmin = async (req, res) => {
+    try {
+        const { firstName, lastName, email, companyName, phoneNum, password } = req.body;
+        const salt = await bcrypt.genSalt(10);
+        const hashed = await bcrypt.hash(password, salt);
+
+        const user = await userModel.create({
+            firstName,
+            lastName,
+            email,
+            companyName,
+            phoneNum,
+            password: hashed,
+            isAdmin: true
+        });
+
+        if (user) {
+            return res.status(201).json({
+                status: "Success",
+                data: user
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            status: "Fail",
+            message: error
+        });
+        console.log(error);
+    }
+};
 exports.signInUser = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -56,7 +87,7 @@ exports.signInUser = async (req, res) => {
                     const { password, ...info } = user._doc;
 
                     await sendMail(user.firstName, user.email, OTP).then((info) => {
-                        console.log("mail sent");
+                        console.log("mail sent", info);
                     }).catch((err) => {
                         console.log(err);
                     });
@@ -64,7 +95,8 @@ exports.signInUser = async (req, res) => {
 
                     res.status(200).json({
                         status: "Success",
-                        token: "Check your email for your logIn OTP"
+                        token: "Check your email for your logIn OTP",
+                        data: user
                     });
                 } else {
                     throw new AppError(400, "Invalid password");
@@ -80,6 +112,7 @@ exports.signInUser = async (req, res) => {
             status: "Fail",
             message: error.message
         });
+        console.log(error);
     }
 };
 
@@ -104,38 +137,10 @@ exports.verifyUser = async (req, res, next) => {
             status: "Fail",
             message: error.message
         });
+        console.log(error.message);
     }
 };
-exports.signInUser = async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        if (email && password) {
-            const user = await userModel.findOne({ email });
-            if (user) {
-                const comparePassword = await bcrypt.compare(password, user.password);
-                if (comparePassword) {
-                    const getUser = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: process.env.EXPIRED_DATE });
 
-                    res.status(200).json({
-                        status: "Success",
-                        token: getUser
-                    });
-                } else {
-                    throw new AppError(400, "Invalid password");
-                }
-            } else {
-                throw new AppError(400, "User not found");
-            }
-        } else {
-            throw new AppError(400, "User eamil and password must be added");
-        }
-    } catch (error) {
-        res.status(500).json({
-            status: "Fail",
-            message: error.message
-        });
-    }
-};
 exports.createAddress = async (req, res, next) => {
     try {
         const { country, firstName, lastName, address, apartment, city, state, NearestBusStop, phoneNumber } = req.body;
@@ -189,7 +194,7 @@ exports.getAll = async (req, res) => {
 
 exports.getSingleUser = async (req, res) => {
     try {
-        const user = await userModel.findById(req.params.id);
+        const user = await userModel.findById(req.params.id).populate("product");
 
         if (user) {
             res.status(200).json({

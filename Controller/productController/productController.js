@@ -93,7 +93,7 @@ exports.createFood = async (req, res, next) => {
             throw new AppError(404, "You are not allowed to perform this operation");
         }
 
-        if (category != "food and groceries") {
+        if (category != "food") {
             throw new AppError(404, "this category does not exsit");
         }
 
@@ -147,7 +147,7 @@ exports.createCloth = async (req, res, next) => {
             throw new AppError(404, "You are not allowed to perform this operation");
         }
 
-        if (category != "clothing and fashion") {
+        if (category != "clothing") {
             throw new AppError(404, "this category does not exsit");
         }
 
@@ -283,6 +283,24 @@ exports.getSingleProduct = async (req, res, next) => {
             status: "Fail",
             message: error.message
         });
+    }
+};
+exports.getSellerProducts = async (req, res) => {
+    try {
+        const userId = req.params.userID;
+
+        const product = await userModel.findById(userId).populate("product").sort("asc");
+
+        res.status(200).json({
+            status: "Success",
+            data: product
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: "Failed",
+            message: error.message
+        });
+        console.log(error);
     }
 };
 exports.searchPost = async (req, res) => {
