@@ -46,10 +46,13 @@ const productModel = mongoose.Schema({
     endDate: {
         type: String
     },
+    rejected: {
+        type: String
+    },
     orderNumber: {
         type: String
     },
-    tag: {
+    tag_No: {
         type: String
     },
     avatar: [ {

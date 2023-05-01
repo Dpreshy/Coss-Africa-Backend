@@ -10,7 +10,7 @@ router.route("/:id/create/cloth").post(upload.array("avatar"), createCloth);
 router.route("/:id/create/food").post(upload.array("avatar"), createFood);
 router.route("/:id/create/electronics").post(upload.array("avatar"), createElectronics);
 router.route("/:userID/:proID/remove").delete(removeProduct);
-router.route("/:id").get(getSingleProduct);
+router.route("/:productID").get(getSingleProduct);
 router.route("/:userID/seller").get(getSellerProducts);
 router.route("/:productID/update").patch(productVariation);
 router.route("/:productID/order").patch(purchaseProduct);
