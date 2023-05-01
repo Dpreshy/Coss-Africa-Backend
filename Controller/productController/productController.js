@@ -271,7 +271,9 @@ exports.getSingleProduct = async (req, res, next) => {
         const product = await productModel.findById(req.params.productID);
 
         if (!product) {
-            throw new AppError(404, "Product as not been created");
+            res.status(404).json({
+                message: "Product does not exist"
+            });
         }
 
         res.status(200).json({
@@ -279,10 +281,11 @@ exports.getSingleProduct = async (req, res, next) => {
             data: product
         });
     } catch (error) {
-        res.status(error).json({
+        res.status(500).json({
             status: "Fail",
             message: error.message
         });
+        console.log(error.message);
     }
 };
 exports.getSellerProducts = async (req, res) => {
