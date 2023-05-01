@@ -16,13 +16,16 @@ const orderModel = new mongoose.Schema({
             }
         }
     ],
+    seller: { type: String },
     subtotal: { type: Number, required: true },
     total: { type: Number, required: true },
+    price: { type: Number, required: true },
     order_No: { type: String, required: true },
     country: { type: String, required: true },
     shipping: { type: String },
+    pending_days: { type: String },
     delivery_status: { type: String, default: "pending" },
-    payment_status: { type: String, required: true },
+    payment_status: { type: String },
     payment_method: { type: String, required: true },
     address: { type: String, required: true }
 }, { timestamps: true });

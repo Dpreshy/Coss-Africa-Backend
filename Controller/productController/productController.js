@@ -7,7 +7,7 @@ const fs = require("fs");
 
 exports.getAllProduct = async (req, res, next) => {
     try {
-        const product = await productModel.find();
+        const product = await productModel.find().sort({ createdAt: "desc" });
 
         if (product < 1) {
             throw new AppError(404, "no product found");
@@ -289,8 +289,7 @@ exports.getSellerProducts = async (req, res) => {
     try {
         const userId = req.params.userID;
 
-        const product = await userModel.findById(userId).populate("product").sort("asc");
-
+        const product = await productModel.find({ user: userId }).sort({ createdAt: "desc" });
         res.status(200).json({
             status: "Success",
             data: product
@@ -311,7 +310,7 @@ exports.searchPost = async (req, res) => {
         ]
     } : {};
 
-    const userWord = await postModel.find(keyWord).populate("definition");
+    const userWord = await productModel.find(keyWord);
     res.status(200).send(userWord);
 };
 exports.purchaseProduct = async (req, res) => {
