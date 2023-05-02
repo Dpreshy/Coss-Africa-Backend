@@ -17,6 +17,7 @@ exports.createOrder = async (req, res) => {
             status: "Failed",
             message: error.message
         });
+        console.log(error);
     }
 };
 
