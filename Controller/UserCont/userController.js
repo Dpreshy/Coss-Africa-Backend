@@ -141,34 +141,34 @@ exports.verifyUser = async (req, res, next) => {
     }
 };
 
-exports.createAddress = async (req, res, next) => {
-    try {
-        const { country, firstName, lastName, address, apartment, city, state, NearestBusStop, phoneNumber } = req.body;
+// exports.createAddress = async (req, res, next) => {
+//     try {
+//         const { country, firstName, lastName, address, apartment, city, state, NearestBusStop, phoneNumber } = req.body;
 
-        const user = await userModel.create({
-            country,
-            firstName,
-            lastName,
-            address,
-            apartment,
-            city,
-            state,
-            NearestBusStop,
-            phoneNumber
-        });
+//         const user = await userModel.create({
+//             country,
+//             firstName,
+//             lastName,
+//             address,
+//             apartment,
+//             city,
+//             state,
+//             NearestBusStop,
+//             phoneNumber
+//         });
 
-        res.status(201).json({
-            status: "Success",
-            data: user
-        });
+//         res.status(201).json({
+//             status: "Success",
+//             data: user
+//         });
 
-    } catch (error) {
-        res.status(500).json({
-            status: "Fail",
-            message: error.message
-        });
-    }
-};
+//     } catch (error) {
+//         res.status(500).json({
+//             status: "Fail",
+//             message: error.message
+//         });
+//     }
+// };
 exports.getAll = async (req, res) => {
     try {
         const user = await userModel.find();
@@ -258,6 +258,25 @@ exports.deleteUser = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             status: "Fail",
+            message: error.message
+        });
+    }
+};
+
+exports.updateOrderStatus = async (req, res) => {
+    try {
+        const update = await orderModel.findByIdAndUpdate(
+            req.params.id,
+            { $set: req.body }, { new: true }
+        );
+
+        res.status(200).json({
+            status: "Success",
+            data: update
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: "Failed",
             message: error.message
         });
     }
