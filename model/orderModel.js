@@ -13,7 +13,7 @@ const orderModel = new mongoose.Schema({
     address: {
         type: String
     },
-    address2: {
+    apartment: {
         type: String
     },
     state: {
