@@ -7,6 +7,9 @@ const orderModel = new mongoose.Schema({
     lastName: {
         type: String
     },
+    email: {
+        type: String
+    },
     phone_No: {
         type: String
     },
@@ -30,7 +33,8 @@ const orderModel = new mongoose.Schema({
     },
     products: [
         {
-            type: mongoose.Schema.Types.ObjectId
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "products"
         }
     ],
     seller: { type: String },
