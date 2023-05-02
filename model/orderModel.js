@@ -7,6 +7,9 @@ const orderModel = new mongoose.Schema({
     lastName: {
         type: String
     },
+    email: {
+        type: String
+    },
     phone_No: {
         type: String
     },
