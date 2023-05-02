@@ -8,7 +8,7 @@ const selerRouter = require("./router/selerRouter");
 const productRouter = require("./router/productRouter");
 const orderRouter = require("./router/orderRouter");
 
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 const app = express();
 
 app.use(cors());
