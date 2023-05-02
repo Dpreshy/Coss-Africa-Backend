@@ -55,6 +55,9 @@ const productModel = mongoose.Schema({
     tag_No: {
         type: String
     },
+    shippingFee: {
+        type: String
+    },
     avatar: [ {
         url: {
             type: String,
