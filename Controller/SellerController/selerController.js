@@ -29,7 +29,8 @@ exports.RegisterUser = async (req, res) => {
             companyName,
             phoneNum,
             password: hashed,
-            isSeller: true
+            isSeller: true,
+            status: "pending"
         });
 
         if (user) {

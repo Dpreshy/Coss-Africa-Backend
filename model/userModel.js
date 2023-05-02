@@ -89,6 +89,10 @@ const userModel = mongoose.Schema({
         type: Boolean,
         default: false
     },
+    status: {
+        type: String,
+        default: false
+    },
     product: [ {
         type: mongoose.Schema.Types.ObjectId,
         ref: "products"

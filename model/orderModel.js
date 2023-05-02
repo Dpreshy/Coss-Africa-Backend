@@ -1,19 +1,30 @@
 const mongoose = require("mongoose");
 
 const orderModel = new mongoose.Schema({
-    userId: {
-        type: String,
-        required: true
+    firstName: {
+        type: String
+    },
+    lastName: {
+        type: String
+    },
+    country: {
+        type: String
+    },
+    address: {
+        type: String
+    },
+    address2: {
+        type: String
+    },
+    state: {
+        type: String
+    },
+    Localgovt: {
+        type: String
     },
     products: [
         {
-            productId: {
-                type: String,
-            },
-            quantity: {
-                type: Number,
-                default: 1
-            }
+          type: mongoose.Schema.Types.ObjectId
         }
     ],
     seller: { type: String },
