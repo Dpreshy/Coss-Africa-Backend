@@ -13,7 +13,7 @@ const orderModel = new mongoose.Schema({
     address: {
         type: String
     },
-    address2: {
+    apartment: {
         type: String
     },
     state: {
@@ -24,7 +24,8 @@ const orderModel = new mongoose.Schema({
     },
     products: [
         {
-          type: mongoose.Schema.Types.ObjectId
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "products"
         }
     ],
     seller: { type: String },
