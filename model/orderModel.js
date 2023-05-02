@@ -22,6 +22,9 @@ const orderModel = new mongoose.Schema({
     Localgovt: {
         type: String
     },
+    nearestBusStop: {
+        type: String
+    },
     products: [
         {
           type: mongoose.Schema.Types.ObjectId
