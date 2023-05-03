@@ -27,13 +27,16 @@ const orderModel = new mongoose.Schema({
     },
     products: [
         {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "products"
+            productID: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "products"
+            },
+            qty: { type: Number }
         }
     ],
     seller: { type: String },
     subtotal: { type: Number, required: true },
-    total: { type: Number, required: true },
+    totalQty: { type: Number, required: true },
     order_No: { type: Number, required: true },
     country: { type: String, required: true },
     shipping: { type: String },

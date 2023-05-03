@@ -13,7 +13,7 @@ router.route("/:userID/:proID/remove").delete(removeProduct);
 router.route("/:productID").get(getSingleProduct);
 router.route("/:userID/seller").get(getSellerProducts);
 router.route("/:productID/update").patch(productVariation);
-router.route("/:productID/order").patch(purchaseProduct);
+router.route("/order").patch(purchaseProduct);
 // router.route("/:productID/status").patch(updateOrderStatus);
 
 module.exports = router;
