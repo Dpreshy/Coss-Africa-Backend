@@ -91,7 +91,7 @@ const userModel = mongoose.Schema({
     },
     status: {
         type: String,
-        default: false
+        default: "pending"
     },
     product: [ {
         type: mongoose.Schema.Types.ObjectId,
