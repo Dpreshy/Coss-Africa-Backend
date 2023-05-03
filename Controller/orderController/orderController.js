@@ -78,7 +78,7 @@ exports.getOrder = async (req, res) => {
 
 exports.getOneOrder = async (req, res) => {
     try {
-        const order = await orderModel.findById(req.params.userID);
+        const order = await orderModel.findById(req.params.userID).populate("products.productID");
         res.status(200).json({
             status: "Success",
             data: order

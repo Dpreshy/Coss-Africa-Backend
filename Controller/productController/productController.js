@@ -317,30 +317,41 @@ exports.searchPost = async (req, res) => {
     res.status(200).send(userWord);
 };
 exports.purchaseProduct = async (req, res) => {
-    try {
-        const id = req.params.productID;
-        const { qty } = req.body;
-        const getProduct = await productModel.findById(id);
+    const { ids, quantities } = req.body;
 
-        if (getProduct.quantity == 0) {
-            throw new AppError(404, "No product found");
+    // Convert quantities array into numbers
+    const parsedQuantities = quantities.map(quantity => parseInt(quantity));
+
+    try {
+        // Check if any of the quantities are invalid
+        if (parsedQuantities.some(quantity => isNaN(quantity) || quantity < 1)) {
+            return res.status(400).json({ error: 'Invalid quantity value' });
         }
 
-        const purchased = await productModel.findByIdAndUpdate(getProduct._id, {
-            quantity: getProduct.quantity - qty,
-            status: "pending"
-        }, { new: true });
+        // Get the current products
+        const currentProducts = await productModel.find({ _id: { $in: ids } });
 
-        res.status(200).json({
-            status: "Success",
-            data: purchased
-        });
-    } catch (error) {
-        res.status(500).json({
-            status: "Failed",
-            message: error.message
-        });
-        console.log(error);
+        // Check if any of the products don't exist
+        if (currentProducts.length !== ids.length) {
+            return res.status(404).json({ error: 'One or more products not found' });
+        }
+
+        // Check if any of the products have insufficient quantity
+        const insufficientQuantities = currentProducts.filter((product, index) => product.quantity < parsedQuantities[ index ]);
+        if (insufficientQuantities.length > 0) {
+            return res.status(400).json({ error: 'Insufficient quantity for one or more products' });
+        }
+
+        // Update the products
+        const updateResults = await Promise.all(
+            ids.map((id, index) =>
+                productModel.updateOne({ _id: id }, { $inc: { quantity: -parsedQuantities[ index ] } })
+            )
+        );
+
+        res.json({ success: true, updateResults });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
     }
 };
 exports.removeProduct = async (req, res) => {
