@@ -78,7 +78,7 @@ exports.getOrder = async (req, res) => {
 
 exports.getOneOrder = async (req, res) => {
     try {
-        const order = await orderModel.find({ userId: req.params.userID });
+        const order = await orderModel.findById(req.params.userID);
         res.status(200).json({
             status: "Success",
             data: order
