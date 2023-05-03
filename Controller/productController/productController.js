@@ -7,7 +7,7 @@ const fs = require("fs");
 
 exports.getAllProduct = async (req, res, next) => {
     try {
-        const product = await productModel.find().populate("selerProduct").sort({ createdAt: "desc" });
+        const product = await productModel.find().populate("user").sort({ createdAt: "desc" });
 
         if (product < 1) {
             throw new AppError(404, "no product found");
