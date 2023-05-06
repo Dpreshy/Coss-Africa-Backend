@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const AppError = require("../../middleware/AppError");
 const sendMail = require("../../utils/nodemailer");
 require("dotenv").config();
+const adminModel = require("../../model/AdminModel");
 
 const generateOTP = () => {
     let digits = "0123456789";
@@ -20,7 +21,7 @@ exports.RegisterUser = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashed = await bcrypt.hash(password, salt);
 
-        const user = await userModel.create({
+        const user = await adminModel.create({
             firstName,
             lastName,
             email,
@@ -39,19 +40,19 @@ exports.RegisterUser = async (req, res) => {
             status: "Fail",
             message: error.message
         });
+        console.log(error);
     }
 };
 exports.RegisterAdmin = async (req, res) => {
     try {
-        const { firstName, lastName, email, companyName, phoneNum, password } = req.body;
+        const { firstName, lastName, email, phoneNum, password } = req.body;
         const salt = await bcrypt.genSalt(10);
         const hashed = await bcrypt.hash(password, salt);
 
-        const user = await userModel.create({
+        const user = await adminModel.create({
             firstName,
             lastName,
             email,
-            companyName,
             phoneNum,
             password: hashed,
             isAdmin: true
@@ -66,7 +67,7 @@ exports.RegisterAdmin = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             status: "Fail",
-            message: error
+            message: error.message
         });
         console.log(error);
     }
@@ -75,9 +76,8 @@ exports.signInUser = async (req, res) => {
     try {
         const { email, password } = req.body;
         if (email && password) {
-            const user = await userModel.findOne({ email });
+            const user = await adminModel.findOne({ email });
             const OTP = generateOTP();
-            user.otp = OTP;
             if (user) {
                 const comparePassword = await bcrypt.compare(password, user.password);
                 if (comparePassword) {
@@ -140,35 +140,30 @@ exports.verifyUser = async (req, res, next) => {
         console.log(error.message);
     }
 };
+exports.verifyUser2 = async (req, res, next) => {
+    try {
+        const userID = req.params.id;
+        const { otp } = req.body;
 
-// exports.createAddress = async (req, res, next) => {
-//     try {
-//         const { country, firstName, lastName, address, apartment, city, state, NearestBusStop, phoneNumber } = req.body;
+        const getUser = await adminModel.findById(userID);
+        if (getUser.otp != otp) {
+            throw new AppError(400, "Invalid OTP");
+        }
+        await userModel.findByIdAndUpdate(userID, { otp: "" }, { new: true });
 
-//         const user = await userModel.create({
-//             country,
-//             firstName,
-//             lastName,
-//             address,
-//             apartment,
-//             city,
-//             state,
-//             NearestBusStop,
-//             phoneNumber
-//         });
+        res.status(200).json({
+            status: "Success",
+            message: getUser
+        });
 
-//         res.status(201).json({
-//             status: "Success",
-//             data: user
-//         });
-
-//     } catch (error) {
-//         res.status(500).json({
-//             status: "Fail",
-//             message: error.message
-//         });
-//     }
-// };
+    } catch (error) {
+        res.status(500).json({
+            status: "Fail",
+            message: error.message
+        });
+        console.log(error.message);
+    }
+};
 exports.getAll = async (req, res) => {
     try {
         const user = await userModel.find();
@@ -214,18 +209,14 @@ exports.getSingleUser = async (req, res) => {
 exports.updateUser = async (req, res) => {
     try {
         const userID = req.params.id;
-        const { firstName, lastName, phoneNum } = req.body;
-        const user = await userModel.findById(userID);
+        // const { firstName, lastName, phoneNum } = req.body;
+        const user = await adminModel.findById(userID);
 
         if (!user) {
             throw new AppError(404, "User does not exist");
         }
 
-        const update = await userModel.findByIdAndUpdate(user._id, {
-            firstName,
-            lastName,
-            phoneNum
-        }, { new: true });
+        const update = await userModel.findByIdAndUpdate(user._id, req.body, { new: true });
         if (update) {
             res.status(200).json({
                 status: "Success",
