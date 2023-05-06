@@ -48,49 +48,49 @@ exports.RegisterUser = async (req, res) => {
     }
 };
 
-// exports.signInUser = async (req, res) => {
-//     try {
-//         const { email, password } = req.body;
-//         if (email && password) {
-//             const user = await userModel.findOne({ email });
-//             const OTP = generateOTP();
-//             user.otp = OTP;
-//             if (user) {
-//                 const comparePassword = await bcrypt.compare(password, user.password);
-//                 if (comparePassword) {
-//                     const getUser = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: process.env.EXPIRED_DATE });
-//                     await userModel.findByIdAndUpdate(user._id, { otp: OTP }, { new: true });
+exports.signInUser = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        if (email && password) {
+            const user = await userModel.findOne({ email });
+            const OTP = generateOTP();
+            user.otp = OTP;
+            if (user) {
+                const comparePassword = await bcrypt.compare(password, user.password);
+                if (comparePassword) {
+                    const getUser = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: process.env.EXPIRED_DATE });
+                    await userModel.findByIdAndUpdate(user._id, { otp: OTP }, { new: true });
 
-//                     const { password, ...info } = user._doc;
+                    const { password, ...info } = user._doc;
 
-//                     await sendMail(user.firstName, user.email, OTP).then((info) => {
-//                         console.log("mail sent", info);
-//                     }).catch((err) => {
-//                         console.log(err);
-//                     });
-//                     console.log(OTP);
+                    await sendMail(user.firstName, user.email, OTP).then((info) => {
+                        console.log("mail sent", info);
+                    }).catch((err) => {
+                        console.log(err);
+                    });
+                    console.log(OTP);
 
-//                     res.status(200).json({
-//                         status: "Success",
-//                         token: "Check your email for your logIn OTP",
-//                         data: user
-//                     });
-//                 } else {
-//                     throw new AppError(400, "Invalid password");
-//                 }
-//             } else {
-//                 throw new AppError(400, "User not found");
-//             }
-//         } else {
-//             throw new AppError(400, "User eamil and password must be added");
-//         }
-//     } catch (error) {
-//         res.status(500).json({
-//             status: "Fail",
-//             message: error.message
-//         });
-//     }
-// };
+                    res.status(200).json({
+                        status: "Success",
+                        token: "Check your email for your logIn OTP",
+                        data: user
+                    });
+                } else {
+                    throw new AppError(400, "Invalid password");
+                }
+            } else {
+                throw new AppError(400, "User not found");
+            }
+        } else {
+            throw new AppError(400, "User eamil and password must be added");
+        }
+    } catch (error) {
+        res.status(500).json({
+            status: "Fail",
+            message: error.message
+        });
+    }
+};
 
 // exports.verifyUser = async (req, res, next) => {
 //     try {

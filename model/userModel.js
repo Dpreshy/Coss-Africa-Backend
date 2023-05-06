@@ -17,7 +17,6 @@ const userModel = mongoose.Schema({
     },
     companyName: {
         type: String,
-        unique: true,
     },
     password: {
         type: String

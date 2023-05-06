@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const errorHandler = require("./middleware/errorHandler");
-require("./utils/db");
+const db = require("./utils/db");
 require("dotenv").config();
 const userRouter = require("./router/userRouter");
 const selerRouter = require("./router/selerRouter");
@@ -10,6 +10,7 @@ const orderRouter = require("./router/orderRouter");
 
 const port = process.env.PORT || 3000;
 const app = express();
+db;
 
 app.use(cors());
 app.use(express.json());

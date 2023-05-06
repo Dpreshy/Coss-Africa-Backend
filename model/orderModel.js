@@ -31,6 +31,11 @@ const orderModel = new mongoose.Schema({
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "products"
             },
+            sellerID: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "users"
+            },
+            price: { type: Number },
             qty: { type: Number }
         }
     ],
@@ -39,7 +44,7 @@ const orderModel = new mongoose.Schema({
     totalQty: { type: Number, required: true },
     order_No: { type: Number, required: true },
     country: { type: String, required: true },
-    shipping: { type: String },
+    shippingFee: { type: Number },
     pending_days: { type: String },
     delivery_status: { type: String, default: "pending" },
     payment_status: { type: String },

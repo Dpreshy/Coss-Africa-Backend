@@ -377,16 +377,16 @@ exports.removeProduct = async (req, res) => {
 };
 
 exports.updateOrderStatus = (req, res) => {
-    productModel.update(
-        { _id: req.body.orderId },
-        { $set: { status: req.body.status } },
-        (err, order) => {
-            if (err) {
-                return res.status(400).json({
-                    error: AppError(err),
-                });
-            }
-            res.json(order);
-        }
-    );
+    try {
+        const product = productModel.findByIdAndUpdate(req.params.id,
+            { $set: { status: req.body } }, { new: true }
+        );
+
+        res.json({
+            status: "Success",
+            data: product
+        });
+    } catch (error) {
+        console.log(error);
+    }
 };

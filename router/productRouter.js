@@ -1,5 +1,5 @@
 const express = require("express");
-const { getAllProduct, createProduct, createCloth, createFood, getSingleProduct, createElectronics, searchPost, removeProduct, productVariation, purchaseProduct, getSellerProducts } = require("../Controller/productController/productController");
+const { getAllProduct, createProduct, createCloth, createFood, getSingleProduct, createElectronics, searchPost, removeProduct, productVariation, purchaseProduct, getSellerProducts, updateOrderStatus } = require("../Controller/productController/productController");
 const router = express.Router();
 const upload = require("../utils/multer");
 
@@ -14,6 +14,6 @@ router.route("/:productID").get(getSingleProduct);
 router.route("/:userID/seller").get(getSellerProducts);
 router.route("/:productID/update").patch(productVariation);
 router.route("/order").patch(purchaseProduct);
-// router.route("/:productID/status").patch(updateOrderStatus);
+// router.route("/:id/status").patch(updateOrderStatus);
 
 module.exports = router;
