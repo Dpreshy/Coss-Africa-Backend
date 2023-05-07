@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const AppError = require("../../middleware/AppError");
 const sendMail = require("../../utils/nodemailer");
 require("dotenv").config();
-const adminModel = require("../../model/AdminModel");
+const adminModel = require("../../model/adminModel");
 
 const generateOTP = () => {
     let digits = "0123456789";
@@ -78,10 +78,12 @@ exports.signInUser = async (req, res) => {
         if (email && password) {
             const user = await adminModel.findOne({ email });
             const OTP = generateOTP();
+
             if (user) {
                 const comparePassword = await bcrypt.compare(password, user.password);
                 if (comparePassword) {
                     const getUser = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: process.env.EXPIRED_DATE });
+                    user.otp = OTP;
                     await userModel.findByIdAndUpdate(user._id, { otp: OTP }, { new: true });
 
                     const { password, ...info } = user._doc;
@@ -91,7 +93,7 @@ exports.signInUser = async (req, res) => {
                     }).catch((err) => {
                         console.log(err);
                     });
-                    console.log(OTP);
+                    console.log(user.otp);
 
                     res.status(200).json({
                         status: "Success",
@@ -146,6 +148,7 @@ exports.verifyUser2 = async (req, res, next) => {
         const { otp } = req.body;
 
         const getUser = await adminModel.findById(userID);
+        console.log(getUser.otp);
         if (getUser.otp != otp) {
             throw new AppError(400, "Invalid OTP");
         }
@@ -167,6 +170,28 @@ exports.verifyUser2 = async (req, res, next) => {
 exports.getAll = async (req, res) => {
     try {
         const user = await userModel.find();
+
+        if (user <= 0) {
+            throw new AppError(400, "no recorde found");
+        }
+        if (user) {
+            res.status(200).json({
+                status: "Success",
+                data: user
+            });
+        } else {
+            throw new AppError(400, "User was not created");
+        }
+    } catch (error) {
+        res.status(500).json({
+            status: "Fail",
+            message: error.message
+        });
+    }
+};
+exports.getAllCustomers = async (req, res) => {
+    try {
+        const user = await adminModel.find();
 
         if (user <= 0) {
             throw new AppError(400, "no recorde found");

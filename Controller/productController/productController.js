@@ -61,6 +61,7 @@ exports.createProduct = async (req, res, next) => {
             quantity,
             category,
             description,
+            status: "pending",
             avatar: urls,
         });
 
@@ -115,6 +116,7 @@ exports.createFood = async (req, res, next) => {
             brand,
             description,
             category,
+            status: "pending",
             avatar: urls
         });
 
@@ -171,6 +173,7 @@ exports.createCloth = async (req, res, next) => {
             type,
             description,
             category,
+            status: "pending",
             avatar: urls
         });
 
@@ -227,6 +230,7 @@ exports.createElectronics = async (req, res, next) => {
             condition,
             description,
             category,
+            status: "pending",
             avatar: urls
         });
 
