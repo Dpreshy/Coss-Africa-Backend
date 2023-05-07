@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const userModel = mongoose.Schema({
+const adminModel = mongoose.Schema({
     firstName: {
         type: String
     },
@@ -19,10 +19,16 @@ const userModel = mongoose.Schema({
         type: String
     },
     avatar: { type: String },
+    isAdmin: { type: Boolean, default: false },
     otp: {
         type: Number,
-    }
+    },
+    product: [ {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "products"
+    } ],
+
 
 }, { timestamps: true });
 
-module.exports = mongoose.model("admin-user", userModel);
+module.exports = mongoose.model("admin-user", adminModel);

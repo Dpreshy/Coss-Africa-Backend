@@ -35,7 +35,7 @@ const productModel = mongoose.Schema({
         type: String
     },
     status: {
-        type: String
+        type: String,
     },
     active: {
         type: Boolean
@@ -56,7 +56,7 @@ const productModel = mongoose.Schema({
         type: String
     },
     shippingFee: {
-        type: String
+        type: Number
     },
     avatar: [ {
         url: {
@@ -70,7 +70,7 @@ const productModel = mongoose.Schema({
     },
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "users"
+        ref: "admin-user"
     },
     selerProduct: {
         type: mongoose.Schema.Types.ObjectId,
