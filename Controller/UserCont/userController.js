@@ -1,10 +1,10 @@
 const userModel = require("../../model/userModel");
+const adminModel = require("../../model/adminModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const AppError = require("../../middleware/AppError");
 const sendMail = require("../../utils/nodemailer");
 require("dotenv").config();
-const adminModel = require("../../model/adminModel");
 
 const generateOTP = () => {
     let digits = "0123456789";
