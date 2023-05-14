@@ -17,37 +17,10 @@ const generateOTP = () => {
 };
 exports.RegisterUser = async (req, res) => {
     try {
-        const { firstName, lastName, email, phoneNum, password } = req.body;
+        const { firstName, lastName, email, phoneNum, password, isAdmin } = req.body;
         const salt = await bcrypt.genSalt(10);
         const hashed = await bcrypt.hash(password, salt);
-
-        const user = await adminModel.create({
-            firstName,
-            lastName,
-            email,
-            phoneNum,
-            password: hashed
-        });
-
-        if (user) {
-            return res.status(201).json({
-                status: "Success",
-                data: user
-            });
-        }
-    } catch (error) {
-        res.status(500).json({
-            status: "Fail",
-            message: error.message
-        });
-        console.log(error);
-    }
-};
-exports.RegisterAdmin = async (req, res) => {
-    try {
-        const { firstName, lastName, email, phoneNum, password } = req.body;
-        const salt = await bcrypt.genSalt(10);
-        const hashed = await bcrypt.hash(password, salt);
+        const OTP = generateOTP();
 
         const user = await adminModel.create({
             firstName,
@@ -55,12 +28,21 @@ exports.RegisterAdmin = async (req, res) => {
             email,
             phoneNum,
             password: hashed,
-            isAdmin: true
+            isAdmin,
+            otp: OTP
         });
+        await sendMail(user.firstName, user.email, OTP).then((info) => {
+            console.log("mail sent", info);
+        }).catch((err) => {
+            console.log(err);
+        });
+        console.log(user.otp);
 
         if (user) {
+
             return res.status(201).json({
                 status: "Success",
+                token: "Check Your Email to verify Your Account",
                 data: user
             });
         }
@@ -77,27 +59,15 @@ exports.signInUser = async (req, res) => {
         const { email, password } = req.body;
         if (email && password) {
             const user = await adminModel.findOne({ email });
-            const OTP = generateOTP();
-
             if (user) {
                 const comparePassword = await bcrypt.compare(password, user.password);
                 if (comparePassword) {
                     const getUser = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: process.env.EXPIRED_DATE });
-                    user.otp = OTP;
-                    await userModel.findByIdAndUpdate(user._id, { otp: OTP }, { new: true });
 
                     const { password, ...info } = user._doc;
 
-                    await sendMail(user.firstName, user.email, OTP).then((info) => {
-                        console.log("mail sent", info);
-                    }).catch((err) => {
-                        console.log(err);
-                    });
-                    console.log(user.otp);
-
                     res.status(200).json({
                         status: "Success",
-                        token: "Check your email for your logIn OTP",
                         data: user
                     });
                 } else {
