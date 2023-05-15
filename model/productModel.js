@@ -70,11 +70,11 @@ const productModel = mongoose.Schema({
     },
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "admin-user"
+        ref: "users"
     },
     selerProduct: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "users"
+        ref: "admin-user"
     },
 
 }, { timestamps: true });
