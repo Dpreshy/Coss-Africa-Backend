@@ -24,8 +24,7 @@ exports.createOrder = async (req, res) => {
 exports.updateOrderStatus = async (req, res) => {
     try {
         const update = await orderModel.findByIdAndUpdate(
-            req.params.id,
-            { $set: req.body }, { new: true }
+            req.params.id, req.body, { new: true }
         );
 
         res.status(200).json({
