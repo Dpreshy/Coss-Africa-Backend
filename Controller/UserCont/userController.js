@@ -36,7 +36,6 @@ exports.RegisterUser = async (req, res) => {
         }).catch((err) => {
             console.log(err);
         });
-        console.log(user.otp);
 
         if (user) {
 

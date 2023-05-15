@@ -45,7 +45,7 @@ const orderModel = new mongoose.Schema({
     order_No: { type: Number, required: true },
     country: { type: String, required: true },
     shippingFee: { type: Number },
-    pending_days: { type: String },
+    pending_days: { type: Number },
     delivery_status: { type: String, default: "pending" },
     payment_status: { type: String },
     payment_method: { type: String, required: true },

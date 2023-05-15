@@ -21,6 +21,7 @@ exports.RegisterUser = async (req, res) => {
         const { firstName, lastName, email, companyName, phoneNum, password } = req.body;
         const salt = await bcrypt.genSalt(10);
         const hashed = await bcrypt.hash(password, salt);
+        const OTP = generateOTP();
 
         const user = await userModel.create({
             firstName,
@@ -30,12 +31,21 @@ exports.RegisterUser = async (req, res) => {
             phoneNum,
             password: hashed,
             isSeller: true,
-            status: "pending"
+            status: "pending",
+            otp: OTP
+        });
+
+        await sendMail(user.firstName, user.email, OTP).then((info) => {
+            console.log("mail sent", info);
+        }).catch((err) => {
+            console.log(err);
         });
 
         if (user) {
+
             return res.status(201).json({
                 status: "Success",
+                token: "Check Your Email to verify Your Account",
                 data: user
             });
         }
@@ -53,8 +63,6 @@ exports.signInUser = async (req, res) => {
         const { email, password } = req.body;
         if (email && password) {
             const user = await userModel.findOne({ email });
-            const OTP = generateOTP();
-            user.otp = OTP;
             if (user) {
                 const comparePassword = await bcrypt.compare(password, user.password);
                 if (comparePassword) {
@@ -62,17 +70,8 @@ exports.signInUser = async (req, res) => {
                     await userModel.findByIdAndUpdate(user._id, { otp: OTP }, { new: true });
 
                     const { password, ...info } = user._doc;
-
-                    await sendMail(user.firstName, user.email, OTP).then((info) => {
-                        console.log("mail sent", info);
-                    }).catch((err) => {
-                        console.log(err);
-                    });
-                    console.log(OTP);
-
                     res.status(200).json({
                         status: "Success",
-                        token: "Check your email for your logIn OTP",
                         data: user
                     });
                 } else {
@@ -91,31 +90,6 @@ exports.signInUser = async (req, res) => {
         });
     }
 };
-
-// exports.verifyUser = async (req, res, next) => {
-//     try {
-//         const userID = req.params.id;
-//         const { otp } = req.body;
-
-//         const getUser = await userModel.findById(userID);
-//         if (getUser.otp != otp) {
-//             throw new AppError(400, "Invalid OTP");
-//         }
-//         await userModel.findByIdAndUpdate(userID, { otp: "" }, { new: true });
-
-//         res.status(200).json({
-//             status: "Success",
-//             message: getUser
-//         });
-
-//     } catch (error) {
-//         res.status(500).json({
-//             status: "Fail",
-//             message: error.message
-//         });
-//         console.log(error.message);
-//     }
-// };
 
 exports.updateUser2 = async (req, res) => {
     try {
