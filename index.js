@@ -7,6 +7,7 @@ const userRouter = require("./router/userRouter");
 const selerRouter = require("./router/selerRouter");
 const productRouter = require("./router/productRouter");
 const orderRouter = require("./router/orderRouter");
+const dailyRouter = require("./router/dailyRouter");
 
 const port = process.env.PORT || 3000;
 const app = express();
@@ -24,6 +25,8 @@ app.use("/api/user", userRouter);
 app.use("/api/seler", selerRouter);
 app.use("/api/product", productRouter);
 app.use("/api/order", orderRouter);
+app.use("/api/daily", dailyRouter);
+
 app.use(errorHandler);
 
 app.listen(port, () => {
