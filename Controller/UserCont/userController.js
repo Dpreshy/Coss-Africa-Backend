@@ -138,7 +138,7 @@ exports.verifyUser2 = async (req, res, next) => {
 };
 exports.getAll = async (req, res) => {
     try {
-        const user = await userModel.find();
+        const user = await userModel.find().sort({ createdAt: "desc" });
 
         if (user <= 0) {
             throw new AppError(400, "no recorde found");
@@ -160,7 +160,7 @@ exports.getAll = async (req, res) => {
 };
 exports.getAllCustomers = async (req, res) => {
     try {
-        const user = await adminModel.find();
+        const user = await adminModel.find().sort({ createdAt: "desc" });
 
         if (user <= 0) {
             throw new AppError(400, "no recorde found");

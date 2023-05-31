@@ -40,7 +40,7 @@ exports.RegisterUser = async (req, res) => {
         }).catch((err) => {
             console.log(err);
         });
-
+        // 
         if (user) {
 
             return res.status(201).json({

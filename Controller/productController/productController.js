@@ -363,6 +363,7 @@ exports.removeProduct = async (req, res) => {
         const productID = req.params.proID;
         const user = await userModel.findById(req.params.userID);
         const product = await productModel.findByIdAndDelete(productID);
+        await productModel.cloudinary.uplo;
 
         user.product.pull(product);
         user.save();
