@@ -21,6 +21,7 @@ app.get("/", (req, res) => {
         message: "Cross Africa DataBase"
     });
 });
+
 app.use("/api/user", userRouter);
 app.use("/api/seler", selerRouter);
 app.use("/api/product", productRouter);
