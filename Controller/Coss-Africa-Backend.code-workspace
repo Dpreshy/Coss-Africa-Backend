@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "Coss-Africa-Backend",
+			"path": ".."
+		},
+		{
+			"name": "views",
+			"path": "../../../TypeScript/TyopescriptMailer/views"
+		}
+	],
+	"settings": {}
+}

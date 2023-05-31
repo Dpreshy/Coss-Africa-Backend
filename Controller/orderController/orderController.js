@@ -62,7 +62,7 @@ exports.deleteOrder = async (req, res) => {
 
 exports.getOrder = async (req, res) => {
     try {
-        const order = await orderModel.find();
+        const order = await orderModel.find().populate("products.productID").sort({ createdAt: "desc" });
         res.status(200).json({
             status: "Success",
             data: order
