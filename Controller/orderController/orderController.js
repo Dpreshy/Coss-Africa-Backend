@@ -1,9 +1,21 @@
 const AppError = require("../../middleware/AppError");
 const orderModel = require("../../model/orderModel");
 const userModel = require("../../model/userModel");
+const AdminModel = require("../../model/AdminModel");
 
+const generateOTP = () => {
+    let digits = "0123456789";
+    let OTPCode = "";
+    for (let i = 0; i < 6; i++) {
+        OTPCode += digits[ Math.floor(Math.random() * 10) ];
+
+    }
+    return OTPCode;
+};
 exports.createOrder = async (req, res) => {
     try {
+        const seller = await userModel.find();
+        req.body.order_No = generateOTP;
         const newOrder = new orderModel(req.body);
 
         const saveOrder = await newOrder.save();

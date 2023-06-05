@@ -16,6 +16,9 @@ const orderModel = new mongoose.Schema({
     apartment: {
         type: String
     },
+    phone_No: {
+        type: Number
+    },
     state: {
         type: String
     },

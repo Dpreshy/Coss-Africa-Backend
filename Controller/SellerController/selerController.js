@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const AppError = require("../../middleware/AppError");
 require("dotenv").config();
-const sendMail = require("../../utils/nodemailer");
+const { sendMail } = require("../../utils/nodemailer");
 const cloudinary = require("../../utils/cloudinary");
 const fs = require("fs");
 
