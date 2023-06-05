@@ -46,8 +46,44 @@ const sendMail = async (user, email, otp) => {
             html: data,
 
         };
+        const result = transport.sendMail(mailOptions);
+        return result;
+    } catch (error) {
+        return error;
+    }
+};
+const orderMail = async (email, name, order_No, user_email, user_name, total) => {
+    try {
+        const createToken = await oAuthPass.getAccessToken();
 
+        const transport = nodeMailer.createTransport({
+            service: "gmail",
+            auth: {
+                type: "OAuth2",
+                user: process.env.GMAIL_USERNAME,
+                clientId: CLIENT_ID,
+                clientSecret: CLIENT_SECRET,
+                refresh_token: REFRESH_TOKEN,
+                accessToken: createToken.token,
+            },
+        });
 
+        const buildFile = path.join(__dirname, "../views/index.ejs");
+        const data = await ejs.renderFile(buildFile, {
+            name: name,
+            order_No: order_No,
+            user_email: user_email,
+            user_name: user_name,
+            total: total
+        });
+
+        const mailOptions = {
+            from: "Cross-Africa",
+            to: email,
+            subject: "Verification OTP",
+            html: data,
+
+        };
         const result = transport.sendMail(mailOptions);
         return result;
     } catch (error) {
@@ -55,4 +91,7 @@ const sendMail = async (user, email, otp) => {
     }
 };
 
-module.exports = sendMail;
+module.exports = {
+    sendMail,
+    orderMail
+};
