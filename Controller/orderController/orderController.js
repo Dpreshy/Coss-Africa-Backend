@@ -14,7 +14,7 @@ const generateOTP = () => {
 exports.createOrder = async (req, res) => {
     try {
         const seller = await userModel.find();
-        req.body.order_No = generateOTP;
+        req.body.order_No = generateOTP();
         req.body.notification = 'new';
         const newOrder = new orderModel(req.body);
 
