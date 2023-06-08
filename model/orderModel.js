@@ -52,7 +52,8 @@ const orderModel = new mongoose.Schema({
     delivery_status: { type: String, default: "pending" },
     payment_status: { type: String },
     payment_method: { type: String, required: true },
-    address: { type: String }
+    address: { type: String },
+    notification: { type: String },
 }, { timestamps: true });
 
 module.exports = mongoose.model("orders", orderModel);

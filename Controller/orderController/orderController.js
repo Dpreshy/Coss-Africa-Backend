@@ -8,7 +8,6 @@ const generateOTP = () => {
     let OTPCode = "";
     for (let i = 0; i < 6; i++) {
         OTPCode += digits[ Math.floor(Math.random() * 10) ];
-
     }
     return OTPCode;
 };
@@ -16,6 +15,7 @@ exports.createOrder = async (req, res) => {
     try {
         const seller = await userModel.find();
         req.body.order_No = generateOTP;
+        req.body.notification = 'new';
         const newOrder = new orderModel(req.body);
 
         const saveOrder = await newOrder.save();
