@@ -13,6 +13,6 @@ router.route("/create").post(createOrder);
 router.route("/").get(getOrder);
 router.route("/:userID").get(getOneOrder);
 router.route("/:id/updatestatus").patch(updateOrderStatus);
-router.route("/:userID/orderID").delete(deleteOrder);
+router.route("/:orderID").delete(deleteOrder);
 
 module.exports = router;

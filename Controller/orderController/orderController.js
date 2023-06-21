@@ -53,13 +53,7 @@ exports.updateOrderStatus = async (req, res) => {
 
 exports.deleteOrder = async (req, res) => {
     try {
-        const admin = req.params.userID;
         const order = req.paramas.orderID;
-
-        const getUser = await userModel.findById(admin);
-        if (getUser.isAdmin != true) {
-            throw new AppError(404, "You can't parform this operation");
-        }
 
         await orderModel.findByIdAndDelete(order);
 
