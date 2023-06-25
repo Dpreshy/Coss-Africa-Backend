@@ -342,9 +342,9 @@ exports.purchaseProduct = async (req, res) => {
 
         // Check if any of the products have insufficient quantity
         const insufficientQuantities = currentProducts.filter((product, index) => product.quantity < parsedQuantities[ index ]);
-        if (insufficientQuantities.length > 0) {
-            return res.status(400).json({ error: 'Insufficient quantity for one or more products' });
-        }
+        // if (insufficientQuantities.length > 0) {
+        //     return res.status(400).json({ error: 'Insufficient quantity for one or more products' });
+        // }
 
         // Update the products
         const updateResults = await Promise.all(
