@@ -82,13 +82,13 @@ exports.createProduct = async (req, res, next) => {
 };
 exports.createFood = async (req, res, next) => {
     try {
-        const userID = req.params.id;
-        const getUser = await userModel.findById(userID);
+        // const userID = req.params.id;
+        // const getUser = await userModel.findById(userID);
         const { name, price, brand, category, ram, quantity, condition, description, storage } = req.body;
 
-        if (getUser.isSeller != true) {
-            throw new AppError(404, "You are not allowed to perform this operation");
-        }
+        // if (getUser.isSeller != true) {
+        //     throw new AppError(404, "You are not allowed to perform this operation");
+        // }
 
         if (category != "food") {
             throw new AppError(404, "this category does not exsit");
@@ -116,11 +116,11 @@ exports.createFood = async (req, res, next) => {
             avatar: urls
         });
 
-        postProduct.user = getUser;
+        // postProduct.user = getUser;
         postProduct.save();
 
-        getUser.product.push(new mongoose.Types.ObjectId(postProduct._id));
-        getUser.save();
+        // getUser.product.push(new mongoose.Types.ObjectId(postProduct._id));
+        // getUser.save();
 
         res.status(201).json({
             status: "Success",
