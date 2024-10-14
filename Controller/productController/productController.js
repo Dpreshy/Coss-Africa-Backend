@@ -31,10 +31,6 @@ exports.createProduct = async (req, res, next) => {
         const getUser = await userModel.findById(userID);
         const { name, price, brand, category, ram, quantity, condition, description, storage } = req.body;
 
-        if (getUser.isSeller != true) {
-            throw new AppError(404, "You are not allowed to perform this operation");
-        }
-
         if (category != "phone") {
             throw new AppError(404, "this category does not exsit");
         }
