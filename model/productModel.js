@@ -65,7 +65,6 @@ const productModel = mongoose.Schema({
     } ],
     category: {
         type: String,
-        enum: [ "phone", "food", "clothing", "electronics" ],
         required: [ true, "Please put in a category" ]
     },
     user: {
