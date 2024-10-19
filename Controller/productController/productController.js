@@ -90,10 +90,6 @@ exports.createFood = async (req, res, next) => {
         //     throw new AppError(404, "You are not allowed to perform this operation");
         // }
 
-        if (category != "food") {
-            throw new AppError(404, "this category does not exsit");
-        }
-
         const image = async (path) => await cloudinary.uploads(path, "Images");
         const urls = [];
         const files = req.files;
@@ -112,6 +108,7 @@ exports.createFood = async (req, res, next) => {
             brand,
             description,
             category,
+            quantity,
             status: "pending",
             avatar: urls
         });
